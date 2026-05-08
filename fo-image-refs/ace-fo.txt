@@ -1,0 +1,1119 @@
+﻿{
+    "nodes":  [
+                  {
+                      "parameters":  {
+
+                                     },
+                      "type":  "n8n-nodes-base.manualTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       352,
+                                       336
+                                   ],
+                      "id":  "e6355d3d-06b5-49a0-bd34-87a93e59f2c0",
+                      "name":  "When clicking â€˜Execute workflowâ€™"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ $json.prompt }}",
+                                         "batching":  {
+
+                                                      }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.chainLlm",
+                      "typeVersion":  1.9,
+                      "position":  [
+                                       800,
+                                       112
+                                   ],
+                      "id":  "45c156ba-9379-498e-82c4-6c785ba5cb36",
+                      "name":  "Basic LLM Chain"
+                  },
+                  {
+                      "parameters":  {
+                                         "model":  "meta-llama/llama-4-scout-17b-16e-instruct",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatGroq",
+                      "typeVersion":  1,
+                      "position":  [
+                                       880,
+                                       336
+                                   ],
+                      "id":  "0b6cdc21-ec8d-470e-ba2b-a98826da49af",
+                      "name":  "Groq Chat Model",
+                      "credentials":  {
+                                          "groqApi":  {
+                                                          "id":  "sdrSrO5ymABGb0mJ",
+                                                          "name":  "Groq account"
+                                                      }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.openai.com/v1/images/generations",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpHeaderAuth",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify({ model: \u0027gpt-image-2\u0027, prompt: $json.text, size: \u00271024x1024\u0027, quality: \u0027low\u0027, output_format: \u0027png\u0027 }) }}",
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "json"
+                                                                                       }
+                                                                      }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       1152,
+                                       112
+                                   ],
+                      "id":  "73ee0bef-53a8-4291-85b9-040cf8e9e757",
+                      "name":  "OpenAI GPT Image 2",
+                      "credentials":  {
+                                          "httpHeaderAuth":  {
+                                                                 "id":  "RAEEwDKKBikQp6Py",
+                                                                 "name":  "OpenAI HTTP"
+                                                             }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.openai.com/v1/images/edits",
+                                         "authentication":  "genericCredentialType",
+                                         "genericAuthType":  "httpHeaderAuth",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify({ model: \u0027gpt-image-2\u0027, prompt: (`Edit the first generated ad into a polished square Facebook ad for the Alaska SET A GO wellness promotion. Use the reference images as strict product sources of truth. The second image, set-a-go.jpg, is the PROMOTION AND COMPOSITION reference: two Alaska Premium Deep Sea Salmon Fish Oil bottles with one free Alaska Garlic Oil Softgels bottle, warm yellow wellness palette, bold benefit headline, clear + FREE GARLIC OIL callout, and a BUY 1 TAKE 1 promo badge. The third image, fishoil.jpg, is the strict source for the Alaska Premium Deep Sea Salmon Fish Oil bottle label, bottle shape, cap seal, golden softgels, yellow label, black bottom band, EPA/DHA Omega-3 text, and 100 Softgels count. The fourth image, garlicoil.jpg, is the strict source for the Alaska Garlic Oil Softgels bottle label, garlic artwork, yellow/orange label, softgels, and 200 Softgels count. Preserve product packaging accuracy and do not invent alternate labels, brands, capsules, bottle shapes, or cap designs. Improve the reference layout so it looks more premium, cleaner, sharper, and more professional than set-a-go.jpg while keeping the promotion obvious: two fish oil bottles plus one free garlic oil bottle, headline about double support for daily wellness, a plus/free garlic oil callout, benefit strip text, and a buy 1 take 1 badge. Keep text short, readable, correctly spelled, and Facebook-ad friendly. Avoid medical cure claims, before/after claims, exaggerated health guarantees, doctors, lab coats, phone numbers, QR codes, website URLs, marketplace buttons, or clickable UI.`), images: [{ image_url: \u0027data:image/png;base64,\u0027 + ($json.imageBase64 || $json.data?.[0]?.b64_json || $(\u0027OpenAI GPT Image 2\u0027).first().json.data[0].b64_json) }, { image_url: \u0027https://raw.githubusercontent.com/khristianaarongarcia/justanimagerepo/main/fo-image-refs/set-a-go.jpg\u0027 }, { image_url: \u0027https://raw.githubusercontent.com/khristianaarongarcia/justanimagerepo/main/fo-image-refs/fishoil.jpg\u0027 }, { image_url: \u0027https://raw.githubusercontent.com/khristianaarongarcia/justanimagerepo/main/fo-image-refs/garlicoil.jpg\u0027 }], size: \u00271024x1024\u0027, quality: \u0027low\u0027, output_format: \u0027png\u0027 }) }}",
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "json"
+                                                                                       }
+                                                                      }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       1600,
+                                       -160
+                                   ],
+                      "id":  "7b41a22c-3934-4be2-9adf-7137f669e404",
+                      "name":  "OpenAI GPT Image 2 Object Replace",
+                      "credentials":  {
+                                          "httpHeaderAuth":  {
+                                                                 "id":  "RAEEwDKKBikQp6Py",
+                                                                 "name":  "OpenAI HTTP"
+                                                             }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst response = item.json || {};\nlet tracked = {};\ntry { tracked = $(\u0027Track Revision Attempt\u0027).last().json || {}; } catch (error) { tracked = {}; }\n\nlet sourcePrompt = \u0027\u0027;\ntry {\n  const promptItem = $(\u0027Build Alaska Set A Go Prompt\u0027).last().json || $(\u0027Basic LLM Chain\u0027).last().json || {};\n  sourcePrompt = promptItem.text || promptItem.output || promptItem.response || promptItem.answer || \u0027\u0027;\n} catch (error) {\n  sourcePrompt = \u0027\u0027;\n}\n\nconst imageGenerationOutput = Array.isArray(response.output)\n  ? response.output.find((output) =\u003e output.type === \u0027image_generation_call\u0027 \u0026\u0026 output.result)\n  : null;\n\nconst rawBase64 =\n  imageGenerationOutput?.result ||\n  response.data?.[0]?.b64_json ||\n  response.data?.[0]?.base64 ||\n  response.b64_json ||\n  response.image_base64;\n\nif (!rawBase64) {\n  throw new Error(\u0027No base64 image found. Expected OpenAI response at output[].result or data[0].b64_json.\u0027);\n}\n\nconst base64 = String(rawBase64).replace(/^data:image\\/\\w+;base64,/, \u0027\u0027);\nconst filename = `alaska_set_a_go_ad_${Date.now()}.png`;\n\nreturn [\n  {\n    json: {\n      status: \u0027success\u0027,\n      filename,\n      mimeType: \u0027image/png\u0027,\n      binaryProperty: \u0027data\u0027,\n      imageBase64: base64,\n      prompt: sourcePrompt,\n      created: response.created || null,\n      usage: response.usage || null,\n      revisionAttempt: Number(tracked.revisionAttempt || 0),\n      renderAttempt: Number(tracked.renderAttempt || 1),\n      scenarioName: tracked.scenarioName || null,\n      scenarioCharacterCount: Number(tracked.scenarioCharacterCount || 0)\n    },\n    binary: {\n      data: {\n        data: base64,\n        mimeType: \u0027image/png\u0027,\n        fileName: filename,\n        fileExtension: \u0027png\u0027\n      }\n    }\n  }\n];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1824,
+                                       -160
+                                   ],
+                      "id":  "4b185f7e-22bb-437f-b12f-0cf297d432b8",
+                      "name":  "Convert OpenAI Image to Binary"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.groq.com/openai/v1/chat/completions",
+                                         "authentication":  "predefinedCredentialType",
+                                         "nodeCredentialType":  "groqApi",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify({ model: \u0027meta-llama/llama-4-scout-17b-16e-instruct\u0027, temperature: 0.1, response_format: { type: \u0027json_object\u0027 }, messages: [{ role: \u0027user\u0027, content: [{ type: \u0027text\u0027, text: `You are a strict visual quality-control reviewer for generated ecommerce/social ad images.\n\nReview the attached Alaska SET A GO Facebook ad image. Score it from 0.0 to 10.0.\n\nCheck for: distorted or misspelled text; unreadable headline, + FREE GARLIC OIL callout, benefit strip, or BUY 1 TAKE 1 badge; wrong Alaska Premium Deep Sea Salmon Fish Oil bottle details compared with fishoil.jpg; wrong Alaska Garlic Oil Softgels bottle details compared with garlicoil.jpg; product count mismatch compared with set-a-go.jpg; missing two fish oil bottles or missing one free garlic oil bottle; hallucinated products, people, body parts, medical props, doctors, lab coats, badges, icons, or UI elements; visual artifacts; unprofessional composition; weak product visibility; clutter; unrealistic lighting; unwanted order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, or marketplace buttons; and likely compliance issues for Facebook ads, Shopee, Lazada, and TikTok product/ad images.\n\nImportant product rule: set-a-go.jpg defines the promotion and composition. fishoil.jpg and garlicoil.jpg define the real bottle and label details. Do not reject legitimate product label details that appear in the references. Reject only if labels are missing, malformed, replaced, hidden, or inconsistent with the references. Avoid medical cure, treatment, prevention, or guaranteed-result claims.\n\nReturn ONLY valid JSON with this shape:\n{\n  \"score\": 8.6,\n  \"decision\": \"pass | revise | fail\",\n  \"issues_prompt\": \"One paragraph written as an image-edit prompt. If score is 8.0 to 9.1, describe exactly what to fix while preserving everything else. If score is 9.2 or higher, say the image is approved and mention any tiny non-blocking notes. If score is below 8.0, explain why it should be discarded and regenerated.\"\n}\n\nDecision rules: pass for score \u003e= 9.2; revise for score \u003e= 8.0 and \u003c 9.2; fail for score \u003c 8.0.` }, { type: \u0027image_url\u0027, image_url: { url: \u0027data:image/png;base64,\u0027 + $json.imageBase64 } }] }] }) }}",
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "json"
+                                                                                       }
+                                                                      }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       2048,
+                                       -160
+                                   ],
+                      "id":  "afd3dd43-4a9f-46f1-ae1e-7a785d7c4e86",
+                      "name":  "Groq Vision QA",
+                      "credentials":  {
+                                          "groqApi":  {
+                                                          "id":  "sdrSrO5ymABGb0mJ",
+                                                          "name":  "Groq account"
+                                                      }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst response = item.json || {};\nconst content = response.choices?.[0]?.message?.content || response.output_text || response.text || \u0027\u0027;\nlet parsed;\ntry {\n  parsed = typeof content === \u0027string\u0027 ? JSON.parse(content) : content;\n} catch (error) {\n  const match = String(content).match(/\\{[\\s\\S]*\\}/);\n  parsed = match ? JSON.parse(match[0]) : {};\n}\nconst score = Number(parsed.score ?? 0);\nconst decision = score \u003e= 9.2 ? \u0027pass\u0027 : score \u003e= 8.0 ? \u0027revise\u0027 : \u0027fail\u0027;\nconst issuesPrompt = String(parsed.issues_prompt || parsed.issues || \u0027QA did not return detailed issues. Re-check text, product bottles, promo text, compliance, and overall ad quality.\u0027);\nlet previous = {};\ntry { previous = $(\u0027Convert OpenAI Image to Binary\u0027).last(); } catch (error) { previous = {}; }\nconst imageBase64 = previous.json?.imageBase64 || previous.binary?.data?.data || \u0027\u0027;\nconst filename = previous.json?.filename || `alaska_set_a_go_ad_${Date.now()}.png`;\nconst binary = previous.binary?.data?.data\n  ? previous.binary\n  : {\n      data: {\n        data: imageBase64,\n        mimeType: \u0027image/png\u0027,\n        fileName: filename,\n        fileExtension: \u0027png\u0027\n      }\n    };\n\nif (!binary.data?.data) {\n  throw new Error(\u0027No image binary/base64 available after QA parsing.\u0027);\n}\n\nreturn [{\n  json: {\n    ...previous.json,\n    filename,\n    qaScore: score,\n    qaDecision: decision,\n    qaIssuesPrompt: issuesPrompt,\n    revisionPrompt: issuesPrompt,\n    imageBase64,\n    reviewJob: `review_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,\n    renderAttempt: Number(previous.json?.renderAttempt || 1),\n    revisionAttempt: Number(previous.json?.revisionAttempt || 0),\n    candidateSource: decision === \u0027pass\u0027 ? \u0027qa-approved output\u0027 : decision === \u0027revise\u0027 ? \u0027qa-revision candidate\u0027 : \u0027discard-regenerate candidate\u0027\n  },\n  binary\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       2272,
+                                       -160
+                                   ],
+                      "id":  "cce60549-7ea6-4510-949e-9a0f97e88503",
+                      "name":  "Parse QA Decision"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "score-pass",
+                                                                                   "leftValue":  "={{ $json.qaScore }}",
+                                                                                   "rightValue":  9.2,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "gte"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       2496,
+                                       -160
+                                   ],
+                      "id":  "722cd07a-b415-482f-af0b-c1e120491a23",
+                      "name":  "QA Passed?"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "revise-score-low",
+                                                                                   "leftValue":  "={{ $json.qaScore }}",
+                                                                                   "rightValue":  8,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "gte"
+                                                                                                }
+                                                                               },
+                                                                               {
+                                                                                   "id":  "revise-score-high",
+                                                                                   "leftValue":  "={{ $json.qaScore }}",
+                                                                                   "rightValue":  9.2,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "lt"
+                                                                                                }
+                                                                               },
+                                                                               {
+                                                                                   "id":  "revise-attempts",
+                                                                                   "leftValue":  "={{ $json.revisionAttempt || 0 }}",
+                                                                                   "rightValue":  2,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "lt"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       2720,
+                                       96
+                                   ],
+                      "id":  "bae28f9e-4733-42f9-9910-1f89eddc5ed4",
+                      "name":  "QA Revisable?"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "return [{\n  json: {\n    ...$json,\n    failedReason: $json.qaIssuesPrompt,\n    discardedAt: new Date().toISOString(),\n    nextAction: \u0027regenerate_from_start\u0027\n  }\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       3840,
+                                       144
+                                   ],
+                      "id":  "397db701-594c-466f-bc90-688b8918e020",
+                      "name":  "Trash Failed Candidate"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const input = $input.first();\nconst binary = input.binary || {};\n\nif (!binary.data?.data) {\n  throw new Error(\u0027No binary.data image found for Telegram send. Expected previous node to provide binary.data.\u0027);\n}\n\nconst fullCaption = `Alaska SET A GO Review Queue\nReview Job: ${$json.reviewJob}\nWorkflow Attempt: ${$json.renderAttempt || 1}\nQA Score: ${Number($json.qaScore).toFixed(2)}\nFilename: ${$json.filename}\nCandidate Source: ${$json.candidateSource}\n\nQA Notes: ${$json.qaIssuesPrompt}\n\nClick Revise if this image needs changes. After clicking, reply to this photo with the exact revision instructions.`;\nconst telegramCaption = fullCaption.length \u003e 1024\n  ? `${fullCaption.slice(0, 1000)}\\n...`\n  : fullCaption;\n\nreturn [{\n  json: {\n    ...$json,\n    telegramChatId: $json.telegramChatId || \u0027-5233739460\u0027,\n    telegramCaption,\n    telegramInlineKeyboard: {\n      inline_keyboard: [[\n        { text: \u0027Revise\u0027, callback_data: `alaska_revise:${$json.reviewJob}` }\n      ]]\n    }\n  },\n  binary\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       3840,
+                                       -160
+                                   ],
+                      "id":  "dcbcd14c-aab8-4ad4-bfb0-50156b508f40",
+                      "name":  "Prepare Telegram Review Payload"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "sendPhoto",
+                                         "chatId":  "={{ $json.telegramChatId }}",
+                                         "binaryData":  true,
+                                         "replyMarkup":  "inlineKeyboard",
+                                         "inlineKeyboard":  {
+                                                                "rows":  [
+                                                                             {
+                                                                                 "row":  {
+                                                                                             "buttons":  [
+                                                                                                             {
+                                                                                                                 "text":  "Revise",
+                                                                                                                 "additionalFields":  {
+                                                                                                                                          "callback_data":  "={{ `alaska_revise:${$json.reviewJob}` }}"
+                                                                                                                                      }
+                                                                                                             }
+                                                                                                         ]
+                                                                                         }
+                                                                             }
+                                                                         ]
+                                                            },
+                                         "additionalFields":  {
+                                                                  "caption":  "={{ $json.telegramCaption }}",
+                                                                  "parse_mode":  "HTML"
+                                                              }
+                                     },
+                      "type":  "n8n-nodes-base.telegram",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       4288,
+                                       -160
+                                   ],
+                      "id":  "6b7569c7-dc87-41b6-9ea8-180e3ce37686",
+                      "name":  "Send Telegram Review Photo",
+                      "webhookId":  "fb3998c8-2324-447b-8907-52589b149af8",
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "TihxoKlmMJfFPOQo",
+                                                              "name":  "Telegram account"
+                                                          }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "fallback-low",
+                                                                                   "leftValue":  "={{ $json.qaScore }}",
+                                                                                   "rightValue":  8.8,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "gte"
+                                                                                                }
+                                                                               },
+                                                                               {
+                                                                                   "id":  "fallback-high",
+                                                                                   "leftValue":  "={{ $json.qaScore }}",
+                                                                                   "rightValue":  9.2,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "lt"
+                                                                                                }
+                                                                               },
+                                                                               {
+                                                                                   "id":  "fallback-attempts",
+                                                                                   "leftValue":  "={{ $json.revisionAttempt || 0 }}",
+                                                                                   "rightValue":  2,
+                                                                                   "operator":  {
+                                                                                                    "type":  "number",
+                                                                                                    "operation":  "gte"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       2944,
+                                       96
+                                   ],
+                      "id":  "c182400b-eeaf-430d-9de2-726a9deabbdf",
+                      "name":  "After 2 Revisions Score 8.8-9.1?"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://api.groq.com/openai/v1/chat/completions",
+                                         "authentication":  "predefinedCredentialType",
+                                         "nodeCredentialType":  "groqApi",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "={{ JSON.stringify({ model: \u0027meta-llama/llama-4-scout-17b-16e-instruct\u0027, temperature: 0.05, response_format: { type: \u0027json_object\u0027 }, messages: [{ role: \u0027user\u0027, content: [{ type: \u0027text\u0027, text: `You are doing the final strict safety and quality double-check before this ad is sent to Telegram for human approval. Review the attached Alaska SET A GO Facebook ad image. Focus only on blocking issues: distorted or unreadable text, misspelled Alaska brand/product text, broken + FREE GARLIC OIL or BUY 1 TAKE 1 promo text, fish oil bottle details that do not match fishoil.jpg, garlic oil bottle details that do not match garlicoil.jpg, missing two fish oil bottles, missing one free garlic oil bottle, hallucinated products/body parts/medical props, visual artifacts, unprofessional ad layout, unwanted order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, marketplace buttons, misleading medical cure claims, or obvious platform-image compliance problems for Facebook ads, Shopee, Lazada, and TikTok. Reference rule: set-a-go.jpg defines the promotion and composition; fishoil.jpg and garlicoil.jpg are authoritative for bottle and label details. Return ONLY valid JSON: {\"approved\": true, \"score\": 8.9, \"issues_prompt\": \"If approved, say it is acceptable for Telegram review despite minor imperfections. If not approved, write one paragraph explaining the blocking issues and that it should be regenerated from the start.\"}` }, { type: \u0027image_url\u0027, image_url: { url: \u0027data:image/png;base64,\u0027 + $json.imageBase64 } }] }] }) }}",
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "json"
+                                                                                       }
+                                                                      }
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       3168,
+                                       16
+                                   ],
+                      "id":  "db8e6092-1943-4a83-b139-27812c57675d",
+                      "name":  "Groq Final Double Check",
+                      "credentials":  {
+                                          "groqApi":  {
+                                                          "id":  "sdrSrO5ymABGb0mJ",
+                                                          "name":  "Groq account"
+                                                      }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst response = item.json || {};\nconst content = response.choices?.[0]?.message?.content || response.output_text || response.text || \u0027\u0027;\nlet parsed;\ntry {\n  parsed = typeof content === \u0027string\u0027 ? JSON.parse(content) : content;\n} catch (error) {\n  const match = String(content).match(/\\{[\\s\\S]*\\}/);\n  parsed = match ? JSON.parse(match[0]) : {};\n}\nlet previous = {};\ntry { previous = $(\u0027Parse QA Decision\u0027).last(); } catch (error) { previous = {}; }\nconst approved = Boolean(parsed.approved);\nconst finalIssuesPrompt = String(parsed.issues_prompt || parsed.issues || \u0027Final double-check did not return issues.\u0027);\nconst previousIssues = previous.json?.qaIssuesPrompt || \u0027\u0027;\nreturn [{\n  json: {\n    ...previous.json,\n    finalDoubleCheckApproved: approved,\n    finalDoubleCheckScore: Number(parsed.score ?? previous.json?.qaScore ?? 0),\n    finalDoubleCheckIssuesPrompt: finalIssuesPrompt,\n    qaIssuesPrompt: approved ? `${previousIssues}\\nFinal double-check: ${finalIssuesPrompt}` : finalIssuesPrompt,\n    candidateSource: approved ? \u0027qa-double-check-approved output\u0027 : \u0027double-check-rejected regenerate candidate\u0027\n  },\n  binary: previous.binary\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       3392,
+                                       16
+                                   ],
+                      "id":  "5aba0002-8498-4561-adac-3fa0ae95fb4d",
+                      "name":  "Parse Final Double Check"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "final-approved",
+                                                                                   "leftValue":  "={{ $json.finalDoubleCheckApproved }}",
+                                                                                   "rightValue":  true,
+                                                                                   "operator":  {
+                                                                                                    "type":  "boolean",
+                                                                                                    "operation":  "true",
+                                                                                                    "singleValue":  true
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       3616,
+                                       16
+                                   ],
+                      "id":  "1e30d7be-07a6-43d9-a49e-c76161250e0b",
+                      "name":  "Final Double Check Approved?"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst current = Number(item.json?.revisionAttempt || 0);\nconst isRevisionLoop = Boolean(item.json?.revisionPrompt || item.json?.qaDecision === \u0027revise\u0027);\nreturn [{\n  json: {\n    ...item.json,\n    revisionAttempt: isRevisionLoop ? current + 1 : current\n  },\n  binary: item.binary\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1376,
+                                       -32
+                                   ],
+                      "id":  "5fbacdd1-4eef-4b50-a283-5bdff532e058",
+                      "name":  "Track Revision Attempt"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const scenarios = [\n  {\n    name: \u0027bright wellness tabletop\u0027,\n    scene: \u0027a clean bright wellness tabletop with warm yellow light, subtle green wellness accents, soft shadows, and premium supplement-ad styling\u0027,\n    characterCount: 0\n  },\n  {\n    name: \u0027healthy morning routine\u0027,\n    scene: \u0027a polished Filipino morning routine setting with a breakfast table, water glass, fruits, soft daylight, and a practical daily-wellness mood\u0027,\n    characterCount: 0\n  },\n  {\n    name: \u0027pharmacy counter display\u0027,\n    scene: \u0027a tidy local pharmacy or supplement counter display with clean shelves, bright lighting, and a trustworthy retail wellness feel\u0027,\n    characterCount: 0\n  },\n  {\n    name: \u0027family wellness shelf\u0027,\n    scene: \u0027a neat home wellness shelf with supplement bottles, a glass of water, simple healthy-living props, and warm approachable lighting\u0027,\n    characterCount: 0\n  }\n];\n\nconst selected = scenarios[Math.floor(Math.random() * scenarios.length)];\n\nconst promptTemplate = `Create a polished square Facebook ad image for the Alaska SET A GO wellness promotion.\n\nScenario direction: {{SCENARIO_DIRECTION}}\nCharacter direction: Do not include people, body parts, doctors, lab coats, medical scenes, or patient imagery. The output should feature only the product bottles, tasteful wellness props, background, and ad typography.\n\nThe source promotion is SET A GO: BUY 1 TAKE 1 with two Alaska Premium Deep Sea Salmon Fish Oil bottles plus one FREE Alaska Garlic Oil Softgels bottle. Make the output look like a premium, cleaner, sharper, more professional version of the provided set-a-go.jpg reference, not a rough copy.\n\nProduct layout: show two large Alaska Premium Deep Sea Salmon Fish Oil bottles as the hero products and one smaller Alaska Garlic Oil Softgels bottle on the right as the free item. Keep all bottles upright, front-facing where possible, crisp, realistic, and not blocked by text. Use fishoil.jpg as the strict reference for the salmon fish oil bottle: Alaska wordmark, yellow label, fish icon, gold/black label bands, EPA/DHA Omega-3 text, 100 Softgels count, softgel capsules, cap seal, and bottle proportions. Use garlicoil.jpg as the strict reference for the garlic oil bottle: Alaska brand, Garlic Oil Softgels wording, garlic artwork, yellow/orange label, 200 Softgels count, softgels, cap seal, and bottle proportions. Do not invent alternate packaging or simplify labels.\n\nRequired ad copy: include a bold headline similar to \"DOUBLE SUPPORT FOR DAILY WELLNESS\". Include a clear red plus sign and \"FREE GARLIC OIL\" callout near the garlic oil bottle. Include a benefit strip with compliant lifestyle wording similar to \"Pair with good habits, not replacement for diet \u0026 exercise\". Include a strong \"BUY 1 TAKE 1\" promo badge. Keep all text readable, correctly spelled, modern, and aligned. Do not overcrowd the design.\n\nCompliance and style: avoid medical cure claims, disease treatment/prevention claims, guaranteed results, exaggerated body claims, before/after framing, or scientific/doctor endorsement visuals. Do not include order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, or marketplace buttons. Use a warm yellow wellness palette with enough contrast, realistic commercial lighting, premium product detail, and a clean Facebook ad composition.`;\n\nconst prompt = promptTemplate.replace(\u0027{{SCENARIO_DIRECTION}}\u0027, selected.scene);\n\nreturn [{\n  json: {\n    ...$json,\n    prompt,\n    text: prompt,\n    scenarioName: selected.name,\n    scenarioCharacterCount: 0,\n    revisionAttempt: 0,\n    renderAttempt: Number($json.renderAttempt || 0) + 1\n  }\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       576,
+                                       336
+                                   ],
+                      "id":  "adb746a3-8759-47b8-9f20-7e46ac279dd6",
+                      "name":  "Build Alaska Set A Go Prompt"
+                  },
+                  {
+                      "parameters":  {
+                                         "updates":  [
+                                                         "callback_query",
+                                                         "message"
+                                                     ],
+                                         "additionalFields":  {
+
+                                                              }
+                                     },
+                      "type":  "n8n-nodes-base.telegramTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       -320,
+                                       -112
+                                   ],
+                      "id":  "38d805a3-1281-49f5-9045-195a72b4ba1f",
+                      "name":  "Telegram Review Button Trigger",
+                      "webhookId":  "cb5523da-76a3-46b9-a84a-23f7c48711e8",
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "TihxoKlmMJfFPOQo",
+                                                              "name":  "Telegram account"
+                                                          }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const update = $json;\nconst callback = update.callback_query || update.callbackQuery || null;\n\nif (callback) {\n  const data = String(callback.data || \u0027\u0027);\n  const [rawAction = \u0027\u0027, reviewJob = \u0027unknown\u0027] = data.split(\u0027:\u0027);\n  const action = rawAction.replace(/^alaska_/, \u0027\u0027);\n  const chat = callback.message?.chat || {};\n  return [{\n    json: {\n      eventType: action === \u0027revise\u0027 ? \u0027revise_button\u0027 : \u0027unknown_callback\u0027,\n      telegramAction: action,\n      reviewJob,\n      callbackData: data,\n      callbackQueryId: callback.id || null,\n      telegramChatId: String(chat.id || \u0027-5233739460\u0027),\n      telegramMessageId: callback.message?.message_id || null,\n      callbackResponseText: action === \u0027revise\u0027\n        ? \u0027Reply to the ad photo with the exact revision instructions.\u0027\n        : `Unknown review action: ${data}`,\n      promptText: `Please reply directly to the Alaska SET A GO ad photo with the exact revision instructions for review job ${reviewJob}. Example: Make the garlic oil bottle clearer, fix the BUY 1 TAKE 1 badge, and improve the headline spacing.`,\n      rawTelegramUpdate: update\n    }\n  }];\n}\n\nconst message = update.message || update.edited_message || {};\nconst chat = message.chat || {};\nconst text = String(message.text || message.caption || \u0027\u0027).trim();\nconst reply = message.reply_to_message || {};\nconst photos = Array.isArray(reply.photo) ? reply.photo : [];\nconst bestPhoto = photos.length ? photos[photos.length - 1] : null;\nconst caption = String(reply.caption || \u0027\u0027);\nconst jobMatch = caption.match(/Review Job:\\s*([^\\n]+)/i);\n\nreturn [{\n  json: {\n    eventType: text \u0026\u0026 bestPhoto ? \u0027revision_text\u0027 : \u0027unsupported_message\u0027,\n    telegramChatId: String(chat.id || \u0027-5233739460\u0027),\n    telegramMessageId: message.message_id || null,\n    repliedToMessageId: reply.message_id || null,\n    reviewJob: jobMatch?.[1]?.trim() || \u0027unknown\u0027,\n    revisionPrompt: text,\n    telegramPhotoFileId: bestPhoto?.file_id || null,\n    callbackResponseText: text \u0026\u0026 bestPhoto\n      ? \u0027Revision instructions received. This is ready to be sent into the image edit step.\u0027\n      : \u0027To revise, click Revise under the ad, then reply directly to that ad photo with your revision instructions.\u0027,\n    rawTelegramUpdate: update\n  }\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       -96,
+                                       -112
+                                   ],
+                      "id":  "6b02d614-24e1-4077-ba1b-d5dffcc71c8c",
+                      "name":  "Parse Review Receiver Update"
+                  },
+                  {
+                      "parameters":  {
+                                         "chatId":  "={{ $json.telegramChatId }}",
+                                         "text":  "={{ $json.promptText }}",
+                                         "additionalFields":  {
+                                                                  "appendAttribution":  false
+                                                              }
+                                     },
+                      "type":  "n8n-nodes-base.telegram",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       352,
+                                       -208
+                                   ],
+                      "id":  "c4c5f78b-6a3a-4a19-8edf-33ce8fb86e84",
+                      "name":  "Ask What To Revise",
+                      "webhookId":  "1cea6639-d43e-4b3b-9a55-4cd12d653e1c",
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "TihxoKlmMJfFPOQo",
+                                                              "name":  "Telegram account"
+                                                          }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "return [{\n  json: {\n    ...$json,\n    nextAction: \u0027send_to_image_edit\u0027,\n    note: \u0027The old Telegram callback query id is intentionally not used here because it expires. Use telegramPhotoFileId to download the replied-to ad image, convert it to base64, then call the OpenAI image edit step with revisionPrompt.\u0027\n  }\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       864,
+                                       -192
+                                   ],
+                      "id":  "bacae95d-e2ba-4070-9487-47b7345a240d",
+                      "name":  "Revision Edit Handoff"
+                  },
+                  {
+                      "parameters":  {
+                                         "amount":  60
+                                     },
+                      "type":  "n8n-nodes-base.wait",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       4512,
+                                       80
+                                   ],
+                      "id":  "1bf080a5-e389-4d89-bbda-316e92a35995",
+                      "name":  "Wait Before Next Image",
+                      "webhookId":  "4475c775-7ef6-489d-a259-5ea9be953d2c"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "is-revise-button",
+                                                                                   "leftValue":  "={{ $json.eventType }}",
+                                                                                   "rightValue":  "revise_button",
+                                                                                   "operator":  {
+                                                                                                    "type":  "string",
+                                                                                                    "operation":  "equals"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       128,
+                                       -112
+                                   ],
+                      "id":  "f4ce7a92-cbab-4ff9-88fe-66dc23652521",
+                      "name":  "Is Revise Button?"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "strict"
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "is-revision-text",
+                                                                                   "leftValue":  "={{ $json.eventType }}",
+                                                                                   "rightValue":  "revision_text",
+                                                                                   "operator":  {
+                                                                                                    "type":  "string",
+                                                                                                    "operation":  "equals"
+                                                                                                }
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       352,
+                                       -16
+                                   ],
+                      "id":  "48f3e357-b3f5-423a-be20-a6a7692f5928",
+                      "name":  "Is Revision Text?"
+                  },
+                  {
+                      "parameters":  {
+                                         "chatId":  "={{ $json.telegramChatId }}",
+                                         "text":  "={{ $json.callbackResponseText }}",
+                                         "additionalFields":  {
+                                                                  "appendAttribution":  false
+                                                              }
+                                     },
+                      "type":  "n8n-nodes-base.telegram",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       576,
+                                       -192
+                                   ],
+                      "id":  "f58b0231-9ba4-4e22-8c52-7c4e5d84f2fb",
+                      "name":  "Confirm Revision Request",
+                      "webhookId":  "e1c5246a-3f6f-4d78-b6f3-538aeeb52fd9",
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "TihxoKlmMJfFPOQo",
+                                                              "name":  "Telegram account"
+                                                          }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "chatId":  "={{ $json.telegramChatId }}",
+                                         "text":  "={{ $json.callbackResponseText }}",
+                                         "additionalFields":  {
+                                                                  "appendAttribution":  false
+                                                              }
+                                     },
+                      "type":  "n8n-nodes-base.telegram",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       576,
+                                       144
+                                   ],
+                      "id":  "1a6fd544-71fd-4675-aeb7-dd16f2269579",
+                      "name":  "Send Revision Instructions Help",
+                      "webhookId":  "d7fc03cb-f6fa-45c0-b569-bc57a41aac9a",
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "TihxoKlmMJfFPOQo",
+                                                              "name":  "Telegram account"
+                                                          }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst json = item.json || {};\nconst binary = item.binary || {};\nconst reviewJob = String(json.reviewJob || \u0027\u0027).trim();\n\nif (!reviewJob) {\n  throw new Error(\u0027Cannot store review output because reviewJob is missing.\u0027);\n}\nif (!json.imageBase64) {\n  throw new Error(\u0027Cannot store review output because imageBase64 is missing.\u0027);\n}\n\nconst store = $getWorkflowStaticData(\u0027global\u0027);\nstore.alaskaReviewJobs = store.alaskaReviewJobs || {};\nstore.alaskaReviewJobOrder = Array.isArray(store.alaskaReviewJobOrder) ? store.alaskaReviewJobOrder : [];\n\nstore.alaskaReviewJobs[reviewJob] = {\n  reviewJob,\n  storedAt: new Date().toISOString(),\n  filename: json.filename || null,\n  mimeType: json.mimeType || \u0027image/png\u0027,\n  imageBase64: json.imageBase64,\n  prompt: json.prompt || \u0027\u0027,\n  qaScore: Number(json.qaScore || 0),\n  qaDecision: json.qaDecision || \u0027\u0027,\n  qaIssuesPrompt: json.qaIssuesPrompt || \u0027\u0027,\n  revisionAttempt: Number(json.revisionAttempt || 0),\n  renderAttempt: Number(json.renderAttempt || 1),\n  candidateSource: json.candidateSource || \u0027\u0027,\n  scenarioName: json.scenarioName || null,\n  scenarioCharacterCount: Number(json.scenarioCharacterCount || 0)\n};\n\nstore.alaskaReviewJobOrder = store.alaskaReviewJobOrder.filter((id) =\u003e id !== reviewJob);\nstore.alaskaReviewJobOrder.push(reviewJob);\n\nconst maxStoredJobs = 50;\nwhile (store.alaskaReviewJobOrder.length \u003e maxStoredJobs) {\n  const oldJob = store.alaskaReviewJobOrder.shift();\n  delete store.alaskaReviewJobs[oldJob];\n}\n\nreturn [{\n  json: {\n    ...json,\n    storedReviewJob: reviewJob,\n    storedReviewJobCount: store.alaskaReviewJobOrder.length\n  },\n  binary\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       4064,
+                                       -160
+                                   ],
+                      "id":  "56c35132-1290-4089-9a74-19eb809fccca",
+                      "name":  "Store Review Output"
+                  },
+                  {
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first();\nconst json = item.json || {};\nconst reviewJob = String(json.reviewJob || \u0027\u0027).trim();\nconst userRevisionPrompt = String(json.revisionPrompt || \u0027\u0027).trim();\n\nif (!reviewJob || reviewJob === \u0027unknown\u0027) {\n  throw new Error(\u0027Cannot load stored review output because reviewJob is missing. Reply directly to a review photo whose caption contains Review Job.\u0027);\n}\nif (!userRevisionPrompt) {\n  throw new Error(\u0027Cannot revise because revisionPrompt is empty.\u0027);\n}\n\nconst store = $getWorkflowStaticData(\u0027global\u0027);\nconst record = store.alaskaReviewJobs?.[reviewJob];\nif (!record) {\n  throw new Error(`No stored image found for reviewJob ${reviewJob}. It may be older than the retained local store window. Generate a fresh review image and reply to that photo.`);\n}\n\nconst revisionPrompt = `Revise the stored Alaska SET A GO Facebook ad image according to this human feedback: \"${userRevisionPrompt}\". Preserve the same square ad layout, two Alaska Premium Deep Sea Salmon Fish Oil bottles, one free Alaska Garlic Oil Softgels bottle, product packaging accuracy, warm yellow wellness palette, readable headline, + FREE GARLIC OIL callout, benefit strip, BUY 1 TAKE 1 badge, lighting, and scene unless the feedback explicitly asks to change them. Keep the ad free of medical cure claims, disease claims, order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, or marketplace buttons. Reference source of truth: set-a-go.jpg defines the promotion and composition; fishoil.jpg and garlicoil.jpg define the real bottle and label details. Do not remove or redesign legitimate packaging elements from the references; only change packaging if the instruction is to restore it closer to the references.`;\n\nreturn [{\n  json: {\n    ...record,\n    ...json,\n    imageBase64: record.imageBase64,\n    filename: record.filename || json.filename || `alaska_set_a_go_revision_${Date.now()}.png`,\n    mimeType: record.mimeType || \u0027image/png\u0027,\n    prompt: record.prompt || \u0027\u0027,\n    originalQaScore: record.qaScore,\n    originalQaIssuesPrompt: record.qaIssuesPrompt,\n    humanRevisionPrompt: userRevisionPrompt,\n    revisionPrompt,\n    revisionAttempt: Number(record.revisionAttempt || 0),\n    renderAttempt: Number(record.renderAttempt || 1),\n    candidateSource: \u0027human-requested revision candidate\u0027,\n    loadedStoredReviewJob: reviewJob\n  },\n  binary: {\n    data: {\n      data: record.imageBase64,\n      mimeType: record.mimeType || \u0027image/png\u0027,\n      fileName: record.filename || `alaska_set_a_go_revision_source_${reviewJob}.png`,\n      fileExtension: \u0027png\u0027\n    }\n  }\n}];"
+                                     },
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1152,
+                                       -192
+                                   ],
+                      "id":  "33be9055-16f5-4aa3-a093-f41ac6125c7d",
+                      "name":  "Load Stored Review Output"
+                  }
+              ],
+    "connections":  {
+                        "When clicking â€˜Execute workflowâ€™":  {
+                                                                     "main":  [
+                                                                                  [
+                                                                                      {
+                                                                                          "node":  "Build Alaska Set A Go Prompt",
+                                                                                          "type":  "main",
+                                                                                          "index":  0
+                                                                                      }
+                                                                                  ]
+                                                                              ]
+                                                                 },
+                        "Basic LLM Chain":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "OpenAI GPT Image 2",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Groq Chat Model":  {
+                                                "ai_languageModel":  [
+                                                                         [
+                                                                             {
+                                                                                 "node":  "Basic LLM Chain",
+                                                                                 "type":  "ai_languageModel",
+                                                                                 "index":  0
+                                                                             }
+                                                                         ]
+                                                                     ]
+                                            },
+                        "OpenAI GPT Image 2":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Track Revision Attempt",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               },
+                        "OpenAI GPT Image 2 Object Replace":  {
+                                                                  "main":  [
+                                                                               [
+                                                                                   {
+                                                                                       "node":  "Convert OpenAI Image to Binary",
+                                                                                       "type":  "main",
+                                                                                       "index":  0
+                                                                                   }
+                                                                               ]
+                                                                           ]
+                                                              },
+                        "Convert OpenAI Image to Binary":  {
+                                                               "main":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Groq Vision QA",
+                                                                                    "type":  "main",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                                           },
+                        "Groq Vision QA":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Parse QA Decision",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           },
+                        "Parse QA Decision":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "QA Passed?",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "QA Passed?":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Prepare Telegram Review Payload",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ],
+                                                        [
+                                                            {
+                                                                "node":  "QA Revisable?",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "QA Revisable?":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Track Revision Attempt",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ],
+                                                           [
+                                                               {
+                                                                   "node":  "After 2 Revisions Score 8.8-9.1?",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          },
+                        "Trash Failed Candidate":  {
+                                                       "main":  [
+                                                                    [
+                                                                        {
+                                                                            "node":  "Build Alaska Set A Go Prompt",
+                                                                            "type":  "main",
+                                                                            "index":  0
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                   },
+                        "Prepare Telegram Review Payload":  {
+                                                                "main":  [
+                                                                             [
+                                                                                 {
+                                                                                     "node":  "Store Review Output",
+                                                                                     "type":  "main",
+                                                                                     "index":  0
+                                                                                 }
+                                                                             ]
+                                                                         ]
+                                                            },
+                        "Send Telegram Review Photo":  {
+                                                           "main":  [
+                                                                        [
+                                                                            {
+                                                                                "node":  "Wait Before Next Image",
+                                                                                "type":  "main",
+                                                                                "index":  0
+                                                                            }
+                                                                        ]
+                                                                    ]
+                                                       },
+                        "After 2 Revisions Score 8.8-9.1?":  {
+                                                                 "main":  [
+                                                                              [
+                                                                                  {
+                                                                                      "node":  "Groq Final Double Check",
+                                                                                      "type":  "main",
+                                                                                      "index":  0
+                                                                                  }
+                                                                              ],
+                                                                              [
+                                                                                  {
+                                                                                      "node":  "Trash Failed Candidate",
+                                                                                      "type":  "main",
+                                                                                      "index":  0
+                                                                                  }
+                                                                              ]
+                                                                          ]
+                                                             },
+                        "Groq Final Double Check":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Parse Final Double Check",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    },
+                        "Parse Final Double Check":  {
+                                                         "main":  [
+                                                                      [
+                                                                          {
+                                                                              "node":  "Final Double Check Approved?",
+                                                                              "type":  "main",
+                                                                              "index":  0
+                                                                          }
+                                                                      ]
+                                                                  ]
+                                                     },
+                        "Final Double Check Approved?":  {
+                                                             "main":  [
+                                                                          [
+                                                                              {
+                                                                                  "node":  "Prepare Telegram Review Payload",
+                                                                                  "type":  "main",
+                                                                                  "index":  0
+                                                                              }
+                                                                          ],
+                                                                          [
+                                                                              {
+                                                                                  "node":  "Trash Failed Candidate",
+                                                                                  "type":  "main",
+                                                                                  "index":  0
+                                                                              }
+                                                                          ]
+                                                                      ]
+                                                         },
+                        "Track Revision Attempt":  {
+                                                       "main":  [
+                                                                    [
+                                                                        {
+                                                                            "node":  "OpenAI GPT Image 2 Object Replace",
+                                                                            "type":  "main",
+                                                                            "index":  0
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                   },
+                        "Build Alaska Set A Go Prompt":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Basic LLM Chain",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Telegram Review Button Trigger":  {
+                                                               "main":  [
+                                                                            [
+                                                                                {
+                                                                                    "node":  "Parse Review Receiver Update",
+                                                                                    "type":  "main",
+                                                                                    "index":  0
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                                           },
+                        "Parse Review Receiver Update":  {
+                                                             "main":  [
+                                                                          [
+                                                                              {
+                                                                                  "node":  "Is Revise Button?",
+                                                                                  "type":  "main",
+                                                                                  "index":  0
+                                                                              }
+                                                                          ]
+                                                                      ]
+                                                         },
+                        "Revision Edit Handoff":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Load Stored Review Output",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Wait Before Next Image":  {
+                                                       "main":  [
+                                                                    [
+                                                                        {
+                                                                            "node":  "Build Alaska Set A Go Prompt",
+                                                                            "type":  "main",
+                                                                            "index":  0
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                   },
+                        "Is Revise Button?":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Ask What To Revise",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ],
+                                                               [
+                                                                   {
+                                                                       "node":  "Is Revision Text?",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Is Revision Text?":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Confirm Revision Request",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ],
+                                                               [
+                                                                   {
+                                                                       "node":  "Send Revision Instructions Help",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Confirm Revision Request":  {
+                                                         "main":  [
+                                                                      [
+                                                                          {
+                                                                              "node":  "Revision Edit Handoff",
+                                                                              "type":  "main",
+                                                                              "index":  0
+                                                                          }
+                                                                      ]
+                                                                  ]
+                                                     },
+                        "Store Review Output":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Send Telegram Review Photo",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Load Stored Review Output":  {
+                                                          "main":  [
+                                                                       [
+                                                                           {
+                                                                               "node":  "Track Revision Attempt",
+                                                                               "type":  "main",
+                                                                               "index":  0
+                                                                           }
+                                                                       ]
+                                                                   ]
+                                                      }
+                    },
+    "pinData":  {
+
+                },
+    "meta":  {
+                 "instanceId":  "cbfe77cf0c2db911fc36680102239d9fc3d4f8970afac3552b8027f44463bca0"
+             }
+}
+
+
