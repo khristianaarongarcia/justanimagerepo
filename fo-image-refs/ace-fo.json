@@ -486,7 +486,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const item = $input.first();\nconst current = Number(item.json?.revisionAttempt || 0);\nconst isRevisionLoop = Boolean(item.json?.revisionPrompt || item.json?.qaDecision === 'revise');\nreturn [{\n  json: {\n    ...item.json,\n    revisionAttempt: isRevisionLoop ? current + 1 : current\n  },\n  binary: item.binary\n}];"
+        "jsCode": "const item = $input.first();\nconst inputJson = item.json || {};\nlet build = {};\ntry { build = $('Build Alaska Set A Go Prompt').last().json || {}; } catch (error) { build = {}; }\n\nconst base = {\n  ...build,\n  ...inputJson,\n  prompt: inputJson.prompt || build.prompt || '',\n  text: inputJson.text || build.text || build.prompt || '',\n  renderAttempt: Number(inputJson.renderAttempt || build.renderAttempt || 1),\n  scenarioName: inputJson.scenarioName || build.scenarioName || null,\n  scenarioCharacterCount: Number(inputJson.scenarioCharacterCount ?? build.scenarioCharacterCount ?? 0)\n};\n\nconst current = Number(base.revisionAttempt || 0);\nconst isRevisionLoop = Boolean(base.revisionPrompt || base.qaDecision === 'revise' || base.candidateSource === 'human-requested revision candidate');\n\nreturn [{\n  json: {\n    ...base,\n    revisionAttempt: isRevisionLoop ? current + 1 : current\n  },\n  binary: item.binary\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -499,7 +499,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const scenarios = [\n  {\n    name: 'bright wellness tabletop',\n    scene: 'a clean bright wellness tabletop with warm yellow light, subtle green wellness accents, soft shadows, and premium supplement-ad styling',\n    characterCount: 0\n  },\n  {\n    name: 'healthy morning routine',\n    scene: 'a polished Filipino morning routine setting with a breakfast table, water glass, fruits, soft daylight, and a practical daily-wellness mood',\n    characterCount: 0\n  },\n  {\n    name: 'pharmacy counter display',\n    scene: 'a tidy local pharmacy or supplement counter display with clean shelves, bright lighting, and a trustworthy retail wellness feel',\n    characterCount: 0\n  },\n  {\n    name: 'family wellness shelf',\n    scene: 'a neat home wellness shelf with supplement bottles, a glass of water, simple healthy-living props, and warm approachable lighting',\n    characterCount: 0\n  }\n];\n\nconst selected = scenarios[Math.floor(Math.random() * scenarios.length)];\n\nconst promptTemplate = `Create a polished square Facebook ad image for the Alaska SET A GO wellness promotion.\n\nScenario direction: {{SCENARIO_DIRECTION}}\nCharacter direction: Do not include people, body parts, doctors, lab coats, medical scenes, or patient imagery. The output should feature only the product bottles, tasteful wellness props, background, and ad typography.\n\nThe source promotion is SET A GO: BUY 1 TAKE 1 with two Alaska Premium Deep Sea Salmon Fish Oil bottles plus one FREE Alaska Garlic Oil Softgels bottle. Make the output look like a premium, cleaner, sharper, more professional version of the provided set-a-go.jpg reference, not a rough copy.\n\nProduct layout: show two large Alaska Premium Deep Sea Salmon Fish Oil bottles as the hero products and one smaller Alaska Garlic Oil Softgels bottle on the right as the free item. Keep all bottles upright, front-facing where possible, crisp, realistic, and not blocked by text. Use fishoil.jpg as the strict reference for the salmon fish oil bottle: Alaska wordmark, yellow label, fish icon, gold/black label bands, EPA/DHA Omega-3 text, 100 Softgels count, softgel capsules, cap seal, and bottle proportions. Use garlicoil.jpg as the strict reference for the garlic oil bottle: Alaska brand, Garlic Oil Softgels wording, garlic artwork, yellow/orange label, 200 Softgels count, softgels, cap seal, and bottle proportions. Do not invent alternate packaging or simplify labels.\n\nRequired ad copy: include a bold headline similar to \"DOUBLE SUPPORT FOR DAILY WELLNESS\". Include a clear red plus sign and \"FREE GARLIC OIL\" callout near the garlic oil bottle. Include a benefit strip with compliant lifestyle wording similar to \"Pair with good habits, not replacement for diet & exercise\". Include a strong \"BUY 1 TAKE 1\" promo badge. Keep all text readable, correctly spelled, modern, and aligned. Do not overcrowd the design.\n\nCompliance and style: avoid medical cure claims, disease treatment/prevention claims, guaranteed results, exaggerated body claims, before/after framing, or scientific/doctor endorsement visuals. Do not include order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, or marketplace buttons. Use a warm yellow wellness palette with enough contrast, realistic commercial lighting, premium product detail, and a clean Facebook ad composition.`;\n\nconst prompt = promptTemplate.replace('{{SCENARIO_DIRECTION}}', selected.scene);\n\nreturn [{\n  json: {\n    ...$json,\n    prompt,\n    text: prompt,\n    scenarioName: selected.name,\n    scenarioCharacterCount: 0,\n    revisionAttempt: 0,\n    renderAttempt: Number($json.renderAttempt || 0) + 1\n  }\n}];"
+        "jsCode": "const scenarios = [\n  {\n    name: 'bright wellness tabletop',\n    scene: 'a clean bright wellness tabletop with warm yellow light, subtle green wellness accents, soft shadows, and premium supplement-ad styling',\n    characterCount: 0\n  },\n  {\n    name: 'healthy morning routine',\n    scene: 'a polished Filipino morning routine setting with a breakfast table, water glass, fruits, soft daylight, and a practical daily-wellness mood',\n    characterCount: 0\n  },\n  {\n    name: 'pharmacy counter display',\n    scene: 'a tidy local pharmacy or supplement counter display with clean shelves, bright lighting, and a trustworthy retail wellness feel',\n    characterCount: 0\n  },\n  {\n    name: 'family wellness shelf',\n    scene: 'a neat home wellness shelf with supplement bottles, a glass of water, simple healthy-living props, and warm approachable lighting',\n    characterCount: 0\n  }\n];\n\nconst selected = scenarios[Math.floor(Math.random() * scenarios.length)];\n\nconst promptTemplate = `Create a polished square Facebook ad image for the Alaska SET A GO wellness promotion.\n\nScenario direction: {{SCENARIO_DIRECTION}}\nCharacter direction: Do not include people, body parts, doctors, lab coats, medical scenes, or patient imagery. The output should feature only the product bottles, tasteful wellness props, background, and ad typography.\n\nThe source promotion is SET A GO: BUY 1 TAKE 1 with two Alaska Premium Deep Sea Salmon Fish Oil bottles plus one FREE Alaska Garlic Oil Softgels bottle. Make the output look like a premium, cleaner, sharper, more professional version of the provided set-a-go.jpg reference, not a rough copy.\n\nProduct layout: show two large Alaska Premium Deep Sea Salmon Fish Oil bottles as the hero products and one smaller Alaska Garlic Oil Softgels bottle on the right as the free item. Keep all bottles upright, front-facing where possible, crisp, realistic, and not blocked by text. Use fishoil.jpg as the strict reference for the salmon fish oil bottle: Alaska wordmark, yellow label, fish icon, gold/black label bands, EPA/DHA Omega-3 text, 100 Softgels count, softgel capsules, cap seal, and bottle proportions. Use garlicoil.jpg as the strict reference for the garlic oil bottle: Alaska brand, Garlic Oil Softgels wording, garlic artwork, yellow/orange label, 200 Softgels count, softgels, cap seal, and bottle proportions. Do not invent alternate packaging or simplify labels.\n\nRequired ad copy: include a bold headline similar to \"DOUBLE SUPPORT FOR DAILY WELLNESS\". Include a clear red plus sign and \"FREE GARLIC OIL\" callout near the garlic oil bottle. Include a benefit strip with compliant lifestyle wording similar to \"Pair with good habits, not replacement for diet & exercise\". Include a strong \"BUY 1 TAKE 1\" promo badge. Keep all text readable, correctly spelled, modern, and aligned. Do not overcrowd the design.\n\nCompliance and style: avoid medical cure claims, disease treatment/prevention claims, guaranteed results, exaggerated body claims, before/after framing, or scientific/doctor endorsement visuals. Do not include order-now buttons, limited-stock banners, website URLs, QR codes, phone numbers, social handles, clickable-looking UI elements, app buttons, or marketplace buttons. Use a warm yellow wellness palette with enough contrast, realistic commercial lighting, premium product detail, and a clean Facebook ad composition.`;\n\nconst prompt = promptTemplate.replace('{{SCENARIO_DIRECTION}}', selected.scene);\nconst previousRenderAttempt = Number($json.renderAttempt || 0);\n\nreturn [{\n  json: {\n    telegramChatId: $json.telegramChatId || '-5233739460',\n    prompt,\n    text: prompt,\n    scenarioName: selected.name,\n    scenarioCharacterCount: 0,\n    revisionAttempt: 0,\n    renderAttempt: previousRenderAttempt + 1,\n    previousReviewJob: $json.reviewJob || null,\n    cycleStartedAt: new Date().toISOString()\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -735,6 +735,19 @@
       ],
       "id": "33be9055-16f5-4aa3-a093-f41ac6125c7d",
       "name": "Load Stored Review Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst sent = item.json || {};\nconst caption = String(sent.caption || sent.message?.caption || sent.result?.caption || sent.text || '');\nconst reviewJob = caption.match(/Review Job:\\s*([^\\n]+)/i)?.[1]?.trim() || '';\nconst store = $getWorkflowStaticData('global');\nconst record = reviewJob ? store.alaskaReviewJobs?.[reviewJob] : null;\n\nif (record) {\n  return [{\n    json: {\n      ...record,\n      telegramSendResult: sent,\n      restoredAfterTelegramSend: true,\n      nextAction: 'continue_generation_loop'\n    },\n    binary: {\n      data: {\n        data: record.imageBase64,\n        mimeType: record.mimeType || 'image/png',\n        fileName: record.filename || `alaska_set_a_go_loop_source_${reviewJob}.png`,\n        fileExtension: 'png'\n      }\n    }\n  }];\n}\n\nconst workflowAttempt = Number(caption.match(/Workflow Attempt:\\s*(\\d+)/i)?.[1] || sent.renderAttempt || 0);\nreturn [{\n  json: {\n    telegramSendResult: sent,\n    restoredAfterTelegramSend: false,\n    reviewJob: reviewJob || sent.reviewJob || null,\n    renderAttempt: workflowAttempt,\n    revisionAttempt: 0,\n    telegramChatId: sent.chat?.id || sent.chatId || '-5233739460',\n    nextAction: 'continue_generation_loop'\n  },\n  binary: item.binary\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4512,
+        -160
+      ],
+      "id": "b8f1a25d-e2f0-4c6f-a44d-3a08d6f2f851",
+      "name": "Restore Loop Context After Telegram Send"
     }
   ],
   "connections": {
@@ -877,7 +890,7 @@
       "main": [
         [
           {
-            "node": "Wait Before Next Image",
+            "node": "Restore Loop Context After Telegram Send",
             "type": "main",
             "index": 0
           }
@@ -1082,6 +1095,17 @@
         [
           {
             "node": "Build Alaska Set A Go Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore Loop Context After Telegram Send": {
+      "main": [
+        [
+          {
+            "node": "Wait Before Next Image",
             "type": "main",
             "index": 0
           }
