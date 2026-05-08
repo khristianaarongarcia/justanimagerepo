@@ -1,5 +1,4 @@
 {
-  "name": "Alaska SET A GO Facebook Ads",
   "nodes": [
     {
       "parameters": {},
@@ -1088,15 +1087,5 @@
         ]
       ]
     }
-  },
-  "settings": {},
-  "staticData": null,
-  "pinData": {},
-  "active": false,
-  "versionId": "25a52624-0bdc-4e80-9369-0aaa91e5578f",
-  "triggerCount": 0,
-  "tags": [],
-  "meta": {
-    "instanceId": "cbfe77cf0c2db911fc36680102239d9fc3d4f8970afac3552b8027f44463bca0"
   }
 }
